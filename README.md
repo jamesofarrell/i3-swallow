@@ -3,7 +3,7 @@ used to swallow (send to the scratchpad) a terminal window after a blocking appl
 
 ## usage
 i3-swallow [-d] cmd  
- -d Don't return swallowed word on exit  
+ -d Don't return swallowed terminal window on exit  
  cmd command to run  
 
 ## demo
