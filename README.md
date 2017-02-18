@@ -7,5 +7,5 @@ i3-swallow [-d] cmd
  cmd command to run  
 
 ## demo
-![demo](https://zippy.gfycat.com/HandmadeBasicHoneybadger.webm)
+![demo](https://zippy.gfycat.com/HandmadeBasicHoneybadger.gif)
 
