@@ -1,69 +1,68 @@
 #!/usr/bin/env python3
 
+import argparse
 import i3ipc
 import subprocess
-import os
+import sys
 from threading import Timer
 from time import sleep
-from sys import argv,stderr
 
-i3 = i3ipc.Connection()
 
-swallowed = False
-dont_return = False
+class I3Swallow(object):
 
-if len(argv) == 1:
-    print("i3-swallow [-d] cmd arg1...")
-    print(" -d Don't return window on exit")
-    exit()
-else:
-    if argv[1] == "-d":
-        dont_return = True;
+    def __init__(self):
+        self.swallowed = False
+        self.window_id = self.args = self.cmdargs = self.node = self.process = None
+        self.parse_args()
+        self.i3 = i3ipc.Connection()
 
-def on_window_open(i3,e):
-    process.poll()
-    global swallowed
-    global dont_return
-    if not swallowed and process.returncode is None:
-        node.command('focus; move scratchpad')
-        global window_id
-        window_id = e.container.id
-        swallowed = True
-        if dont_return:
-            i3.main_quit()
+    def run(self):
+        self.node = self.i3.get_tree().find_focused()
 
-def on_window_close(i3,e):
-    sleep(0.1)
-    process.poll()
-    if swallowed and not (process.returncode is None):
-        cmd = "scratchpad show; floating toggle;"
-        node.command(cmd)
-        exit()
+        self.i3.on("window::new", self.on_window_event)
+        if not self.args.d:
+            self.i3.on("window::close", self.on_window_event)
 
-def check_process():
-    process.poll()
-    if not swallowed and not (process.returncode is None):
-        print("i3-swallow: no process attached", file=stderr)
-        i3.main_quit()
+        Timer(0.5, self.check_process).start()
 
-node = i3.get_tree().find_focused()
+        self.process = subprocess.Popen(self.args.cmd + self.cmdargs,
+                                        stdout=subprocess.PIPE)
+        self.process.poll()
+        if self.process.returncode is not None:
+            sys.exit(self.process.returncode)
 
-command = ""
-if dont_return:
-    command = argv[2:(len(argv))]
-else:
-    command = argv[1:(len(argv))]
+        self.i3.main()
 
-i3.on("window::new",on_window_open)
+    def check_process(self):
+        self.process.poll()
+        if not self.swallowed and self.process.returncode is not None:
+            print("i3-swallow: no process attached", file=sys.stderr)
+            self.i3.main_quit()
 
-if dont_return == False:
-    i3.on("window::close",on_window_close)
+    def on_window_event(self, _, event):
+        sleep(0.1)
+        self.process.poll()
+        if event.change == 'new':
+            if not self.swallowed and self.process.returncode is None:
+                self.node.command('focus; move scratchpad')
+                self.window_id = event.container.id
+                self.swallowed = True
+                if self.args.d:
+                    self.i3.main_quit()
+        elif event.change == 'close':
+            if self.swallowed and self.process.returncode is not None:
+                self.node.command("scratchpad show; floating toggle;")
+                sys.exit()
 
-Timer(0.5,check_process).start()
+    def parse_args(self):
+        parser = argparse.ArgumentParser(description='i3-swallow.')
+        parser.add_argument('-d', action='store_true', help="Don't return window on exit.")
+        parser.add_argument('cmd', nargs='+', help="Command to be executed")
+        self.args, self.cmdargs = parser.parse_known_args()
 
-process = subprocess.Popen(" ".join(command), shell=True, stdout=subprocess.PIPE)
-process.poll()
-if not (process.returncode is None):
-    exit(process.returncode)
 
-i3.main()
+def main():
+    I3Swallow().run()
+
+if __name__ == "__main__":
+    main()
