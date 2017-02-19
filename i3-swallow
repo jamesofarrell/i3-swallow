@@ -12,10 +12,7 @@ class I3Swallow(object):
 
     def __init__(self):
         self.swallowed = False
-        self.window_id = None
-        self.args = None
-        self.node = None
-        self.process = None
+        self.window_id = self.args = self.node = self.process = None
         self.parse_args()
         self.i3 = i3ipc.Connection()
 
