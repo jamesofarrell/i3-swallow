@@ -12,7 +12,7 @@ class I3Swallow(object):
 
     def __init__(self):
         self.swallowed = False
-        self.window_id = self.args = self.node = self.process = None
+        self.window_id = self.args = self.cmdargs = self.node = self.process = None
         self.parse_args()
         self.i3 = i3ipc.Connection()
 
@@ -25,7 +25,8 @@ class I3Swallow(object):
 
         Timer(0.5, self.check_process).start()
 
-        self.process = subprocess.Popen(self.args.cmd, stdout=subprocess.PIPE)
+        self.process = subprocess.Popen(self.args.cmd + self.cmdargs,
+                                        stdout=subprocess.PIPE)
         self.process.poll()
         if self.process.returncode is not None:
             sys.exit(self.process.returncode)
@@ -57,7 +58,7 @@ class I3Swallow(object):
         parser = argparse.ArgumentParser(description='i3-swallow.')
         parser.add_argument('-d', action='store_true', help="Don't return window on exit.")
         parser.add_argument('cmd', nargs='+', help="Command to be executed")
-        self.args = parser.parse_args()
+        self.args, self.cmdargs = parser.parse_known_args()
 
 
 def main():
