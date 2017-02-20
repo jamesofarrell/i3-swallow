@@ -2,11 +2,11 @@
 
 import argparse
 import i3ipc
-import subprocess
 import sys
 import random
 import string
 from threading import Timer
+from multiprocessing import Process
 from time import sleep
 
 
@@ -20,31 +20,35 @@ class I3Swallow(object):
         self.brother_mark = "{0}_{1}".format(self.mark,"b")
         self.child_mark = "{0}_{1}".format(self.mark,"c")
 
-        self.position = self.brother_id = self.window_id = self.args = self.cmdargs = self.node = self.process = None
+        self.position = self.brother_id = self.window_id = self.args = self.cmdargs = self.node = None
         self.bump = False
         self.parse_args()
         self.i3 = i3ipc.Connection()
 
+        self.default_border = 0;
+
     def run(self):
         self.node = self.i3.get_tree().find_focused()
+        if self.node is None or self.node.type =='workspace':
+            return
 
         #register events
         self.i3.on("window::new", self.on_window_event)
-        if not self.args.d:
+        if not self.args.dont_return:
             self.i3.on("window::close", self.on_window_event)
             self.i3.on("window::move", self.on_window_event)
 
         #this is a timeout. rethink
-        Timer(0.5, self.check_process).start()
-
-        self.process = subprocess.Popen(self.args.cmd + self.cmdargs,
-                                        stdout=subprocess.PIPE)
-        self.process.poll()
-        if self.process.returncode is not None:
-            sys.exit(self.process.returncode)
+        if self.args.timeout > 0:
+            Timer(self.args.timeout, self.check_process).start()
 
         #mark window
         self.i3.command("mark {0};".format(self.mark))
+        self.default_border = self.node.current_border_width
+        if (self.args.bold > 0):
+            w = self.args.bold + self.default_border
+            self.node.command("border pixel {0}".format(w))
+
         self.i3.main()
 
     def update_window(self):
@@ -53,20 +57,18 @@ class I3Swallow(object):
         brother = self.find_brother()
         
         if not (brother is None):
-            print("brother!")
+            #print("brother!")
             self.brother_id = brother.id
             self.i3.command('[con_mark="{0}"] unmark;'.format(self.brother_mark))
             brother.command("mark {0};".format(self.brother_mark))
         else:
             self.brother_id = None
 
-        
     def find_position(self):
         nodes = self.node.parent.nodes
         for i in range(0,len(nodes)):
             if nodes[i].id == self.window_id:
                 return i
-
         else:
             return 0
 
@@ -82,9 +84,10 @@ class I3Swallow(object):
 
 
     def check_process(self):
-        self.process.poll()
-        if not self.swallowed and self.process.returncode is not None:
+        if not self.swallowed:
             print("i3-swallow: no process attached", file=sys.stderr)
+            if (self.args.bold > 0):
+                self.node.command("border pixel {0}".format(self.default_border))
             self.i3.main_quit()
 
     def unmark_all(self):
@@ -94,28 +97,38 @@ class I3Swallow(object):
 
     def on_window_event(self, _, event):
         sleep(0.1)
-        self.process.poll()
+        #self.process.poll()
         if event.change == 'new':
-            if not self.swallowed and self.process.returncode is None:
+            if not self.swallowed:
                 self.node.command('[con_mark="{0}"] move scratchpad;'.format(self.mark))
+                if (self.args.bold > 0):
+                    self.node.command("border pixel {0}".format(self.default_border))
+
                 self.window_id = event.container.id
                 self.swallowed = True
-                if self.args.d:
+                if self.args.dont_return:
                     self.i3.main_quit()
                 self.update_window()
 
         elif event.change == 'close':
-            if self.swallowed and self.process.returncode is not None:
+            if self.swallowed and self.window_id == event.container.id:
                 self.i3.command('[con_mark="{0}"] scratchpad show;floating toggle;'.format(self.mark))
                 if not (self.brother_id is None):
                     self.i3.command('[con_mark="{0}"] move window to mark {1};'.format(self.mark, self.brother_mark))
-                    print('[con_mark="{0}"] move window to mark {1};'.format(self.mark, self.brother_mark))
+                    #print('[con_mark="{0}"] move window to mark {1};'.format(self.mark, self.brother_mark))
                     if self.position == 0:
-                        layout = self.i3.find_by_mark(self.mark).parent.layout
+                        marked = self.i3.get_tree().find_marked(self.mark)
+                        if len(marked) > 0:
+                            layout = marked[0].parent.layout
+                            print("found the marked one {0}".format(layout))
                         if layout == 'splitv' or layout == 'stacking':
                             self.i3.command('[con_mark="{0}"] move up;'.format(self.mark))
                         else:
                             self.i3.command('[con_mark="{0}"] move left;'.format(self.mark))
+
+                    if event.container.focused:
+                        self.i3.command('[con_mark="{0}"] focus;'.format(self.mark))
+
                 self.unmark_all()
                 sys.exit()
         elif event.change == 'move':
@@ -124,9 +137,11 @@ class I3Swallow(object):
 
     def parse_args(self):
         parser = argparse.ArgumentParser(description='i3-swallow.')
-        parser.add_argument('-d', action='store_true', help="Don't return window on exit.")
-        parser.add_argument('cmd', nargs='+', help="Command to be executed")
-        self.args, self.cmdargs = parser.parse_known_args()
+        parser.add_argument('-d', action='store_true', dest='dont_return', help="Don't return window on exit.")
+        parser.add_argument('-t', action='store', dest='timeout', default=15, help="Timeout after t seconds.", type=int)
+        parser.add_argument('-b', action='store', dest='bold', type=int, default=0, help="Increase border of window marked for swallow by b.")
+        parser.add_argument('-f', action='store_true', dest='force', help="Force the window to be swallowed, even if it is a replacement window.")
+        self.args = parser.parse_args()
 
 
 def main():
