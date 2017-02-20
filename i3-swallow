@@ -4,25 +4,37 @@ import argparse
 import i3ipc
 import subprocess
 import sys
+import random
+import string
 from threading import Timer
 from time import sleep
+
 
 
 class I3Swallow(object):
 
     def __init__(self):
         self.swallowed = False
-        self.window_id = self.args = self.cmdargs = self.node = self.process = None
+        t = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
+        self.mark = "__{0}_{1}".format('i3-swallow',t)
+        self.brother_mark = "{0}_{1}".format(self.mark,"b")
+        self.child_mark = "{0}_{1}".format(self.mark,"c")
+
+        self.position = self.brother_id = self.window_id = self.args = self.cmdargs = self.node = self.process = None
+        self.bump = False
         self.parse_args()
         self.i3 = i3ipc.Connection()
 
     def run(self):
         self.node = self.i3.get_tree().find_focused()
 
+        #register events
         self.i3.on("window::new", self.on_window_event)
         if not self.args.d:
             self.i3.on("window::close", self.on_window_event)
+            self.i3.on("window::move", self.on_window_event)
 
+        #this is a timeout. rethink
         Timer(0.5, self.check_process).start()
 
         self.process = subprocess.Popen(self.args.cmd + self.cmdargs,
@@ -31,7 +43,43 @@ class I3Swallow(object):
         if self.process.returncode is not None:
             sys.exit(self.process.returncode)
 
+        #mark window
+        self.i3.command("mark {0};".format(self.mark))
         self.i3.main()
+
+    def update_window(self):
+        self.node = self.i3.get_tree().find_by_id(self.window_id)
+        self.position = self.find_position()
+        brother = self.find_brother()
+        
+        if not (brother is None):
+            print("brother!")
+            self.brother_id = brother.id
+            self.i3.command('[con_mark="{0}"] unmark;'.format(self.brother_mark))
+            brother.command("mark {0};".format(self.brother_mark))
+        else:
+            self.brother_id = None
+
+        
+    def find_position(self):
+        nodes = self.node.parent.nodes
+        for i in range(0,len(nodes)):
+            if nodes[i].id == self.window_id:
+                return i
+
+        else:
+            return 0
+
+
+    def find_brother(self):
+        brothers = self.node.parent.nodes
+        if len(brothers) == 1:
+            return None
+        elif self.position == 0:
+            return brothers[1]
+        else:
+            return brothers[self.position-1]
+
 
     def check_process(self):
         self.process.poll()
@@ -39,20 +87,40 @@ class I3Swallow(object):
             print("i3-swallow: no process attached", file=sys.stderr)
             self.i3.main_quit()
 
+    def unmark_all(self):
+        self.i3.command('[con_mark="{0}"] unmark;'.format(self.mark))
+        self.i3.command('[con_mark="{0}"] unmark;'.format(self.brother_mark))
+
+
     def on_window_event(self, _, event):
         sleep(0.1)
         self.process.poll()
         if event.change == 'new':
             if not self.swallowed and self.process.returncode is None:
-                self.node.command('focus; move scratchpad')
+                self.node.command('[con_mark="{0}"] move scratchpad;'.format(self.mark))
                 self.window_id = event.container.id
                 self.swallowed = True
                 if self.args.d:
                     self.i3.main_quit()
+                self.update_window()
+
         elif event.change == 'close':
             if self.swallowed and self.process.returncode is not None:
-                self.node.command("scratchpad show; floating toggle;")
+                self.i3.command('[con_mark="{0}"] scratchpad show;floating toggle;'.format(self.mark))
+                if not (self.brother_id is None):
+                    self.i3.command('[con_mark="{0}"] move window to mark {1};'.format(self.mark, self.brother_mark))
+                    print('[con_mark="{0}"] move window to mark {1};'.format(self.mark, self.brother_mark))
+                    if self.position == 0:
+                        layout = self.i3.find_by_mark(self.mark).parent.layout
+                        if layout == 'splitv' or layout == 'stacking':
+                            self.i3.command('[con_mark="{0}"] move up;'.format(self.mark))
+                        else:
+                            self.i3.command('[con_mark="{0}"] move left;'.format(self.mark))
+                self.unmark_all()
                 sys.exit()
+        elif event.change == 'move':
+            if self.swallowed and event.container.id == self.window_id or event.container.id == self.brother_id:
+                self.update_window()
 
     def parse_args(self):
         parser = argparse.ArgumentParser(description='i3-swallow.')
