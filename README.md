@@ -4,7 +4,7 @@
 <h4 align="center">Used to swallow (send to the scratchpad) a terminal window after a blocking application is run in i3 window manager</h4>
 
 <p align="center">
-  <img src="https://github.com/Uniminin/Swallow/blob/master/swallow.gif">
+  <img src="https://github.com/Uniminin/Swallow/blob/master/Swallow.gif">
 </p>
 
 ## Requirements
