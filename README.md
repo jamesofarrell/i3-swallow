@@ -1,13 +1,24 @@
-# i3-swallow
-used to swallow (send to the scratchpad) a terminal window after a blocking application is run in i3. Requires [i3ipc-python](https://github.com/acrisci/i3ipc-python/).
+<h1 align="center">
+  Swallow
+</h1>
+<h4 align="center">Used to swallow (send to the scratchpad) a terminal window after a blocking application is run in i3 window manager</h4>
 
-## usage
-i3-swallow [-d] [--] cmd  
- -d Don't return swallowed terminal window on exit  
- -- Use -- to seperate the external command if you are having trouble.  
- cmd command to run  
+<p align="center">
+  <img src="https://github.com/Uniminin/Swallow/blob/master/Swallow.gif">
+</p>
 
+## Requirements
+* Unix system with i3 window manager
+* Python3.x+
+* Python3.x+ Pip
 
-## demo
-![demo](https://zippy.gfycat.com/HandmadeBasicHoneybadger.gif)
+## Installation Instructions
+```bash
+$ git clone https://github.com/Uniminin/Swallow/
+$ cd Swallow
+$ python3 -m pip install -r requirements.txt
+$ sudo make install
+```
 
+## License :scroll:
+This Project is licensed under the MIT License. Check license file for more info.
