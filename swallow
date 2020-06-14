@@ -42,27 +42,28 @@ class I3Swallow(object):
     def on_window_event(self, _, event):
         sleep(0.1)
         self.process.poll()
-        if event.change == 'new':
+        if event.change == "new":
             if not self.swallowed and self.process.returncode is None:
-                self.node.command('focus; move scratchpad')
+                self.node.command("focus; move scratchpad")
                 self.window_id = event.container.id
                 self.swallowed = True
                 if self.args.d:
                     self.i3.main_quit()
-        elif event.change == 'close':
+        elif event.change == "close":
             if self.swallowed and self.process.returncode is not None:
                 self.node.command("scratchpad show; floating toggle;")
                 sys.exit()
 
     def parse_args(self):
-        parser = argparse.ArgumentParser(description='i3-swallow.')
-        parser.add_argument('-d', action='store_true', help="Don't return window on exit.")
-        parser.add_argument('cmd', nargs='+', help="Command to be executed")
+        parser = argparse.ArgumentParser(description="i3-swallow.")
+        parser.add_argument("-d", action="store_true", help="Don't return window on exit.")
+        parser.add_argument("cmd", nargs="+", help="Command to be executed")
         self.args, self.cmdargs = parser.parse_known_args()
 
 
 def main():
     I3Swallow().run()
+
 
 if __name__ == "__main__":
     main()
