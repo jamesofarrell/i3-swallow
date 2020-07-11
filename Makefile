@@ -1,15 +1,20 @@
-swallow: 
-	echo "Execute 'make install' as root to install swallow on your system."
-	
+SHELL = /bin/sh
+FILE = swallow
+
+swallow:
+
+.SILENT: run
 update:
-	git pull
-	
-install:
-	if [ -f swallow ]; then cp -v swallow /usr/bin/; fi
-	if [ -f /usr/bin/swallow ]; then chmod +x swallow; fi
-	if [ ! -f /usr/bin/swallow ]; then printf "%s\n" "failed to install 'swallow' on this system"; fi
-	
-	
-uninstall:
-	if [ -f /usr/bin/swallow ]; then rm swallow; fi
-	if [ -f /usr/bin/swallow ]; then printf "%s\n" "failed to uninstall 'swallow' on this system"; fi
+        @ git pull
+
+
+install:${FILE}
+        @ if [ -f ${FILE} ]; then cp -v swallow /usr/bin/; fi
+        @ if [ -f /usr/bin/${FILE} ]; then chmod +x swallow; fi
+        @ if command -v swallow >/dev/null; then printf "%s\n" "Swallow has been installed on this system"; fi
+        @ if ! command -v swallow >/dev/null; then printf "%s\n" "Failed to install Swallow on this system"; fi
+
+uninstall:${FILE}
+        @ if [ -f /usr/bin/${FILE} ]; then rm /usr/bin/${FILE}; fi
+        @ if ! command -v swallow >/dev/null; then printf "%s\n" "Swallow has been removed from this system"; fi
+        @ if command -v swallow >/dev/null; then printf "%s\n" "Failed to remove Swallo on this system"; fi
