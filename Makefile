@@ -17,4 +17,4 @@ install:${FILE}
 uninstall:${FILE}
 		@ if [ -f /usr/bin/${FILE} ]; then rm -v /usr/bin/${FILE}; fi
 		@ if ! command -v ${FILE} >/dev/null; then printf "%s\n" "Swallow has been removed from this system"; fi
-		@ if command -v ${FILE} >/dev/null; then printf "%s\n" "Failed to remove Swallo on this system"; fi
+		@ if command -v ${FILE} >/dev/null; then printf "%s\n" "Failed to remove Swallow from this system"; fi
