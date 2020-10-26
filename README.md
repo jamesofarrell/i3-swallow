@@ -1,5 +1,5 @@
 <h1 align="center">
-  Swallow
+  i3 swallow FULLY IMPLEMENTED ON BASH
 </h1>
 <h4 align="center">Used to swallow (send to the scratchpad) a terminal window after a blocking application is run in i3 window manager</h4>
 
@@ -14,14 +14,12 @@
 
 ## Requirements
 * Unix system with i3 window manager
-* Python3.x+
-* Python3.x+ Pip
+* Bash 
 
 ## Installation Instructions
 ```bash
-$ git clone https://github.com/Uniminin/Swallow/
-$ cd Swallow
-$ python3 -m pip install -r requirements.txt
+$ git clone https://github.com/javierroman/i3-swallow/
+$ cd i3-swallow 
 $ sudo make install
 ```
 
