@@ -6,9 +6,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Maintained%3F-Yes-green?style=for-the-badge">
   <img src="https://img.shields.io/github/license/jamesofarrell/i3-swallow?style=for-the-badge">
-  <img src="https://img.shields.io/github/issues/jamesofarrell/i3-swallow?color=violet&style=for-the-badge">
-  <img src="https://img.shields.io/github/stars/jamesofarrell/i3-swallow?style=for-the-badge">
-  <img src="https://img.shields.io/github/forks/jamesofarrell/i3-swallow?color=teal&style=for-the-badge">
   <img src="https://github.com/Uniminin/Swallow/blob/master/Swallow.gif">
 </p>
 
