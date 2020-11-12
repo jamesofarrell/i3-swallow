@@ -1,10 +1,10 @@
-# CONTRIBUTION BY Angel Uniminin <uniminin@zoho.com> under the terms of MIT
+# CONTRIBUTION: By Angel Uniminin <uniminin@zoho.com> in 2020 under the terms of MIT
 
 # NOTICE: Shell is written to be POSIX compatible
 SHELL = /bin/sh
 FILE = swallow
 
-.PHONY: all clean build list
+.PHONY: all list
 
 #@ Default target invoked on 'make' (outputs syntax error on this project)
 all:
@@ -22,12 +22,12 @@ list:
 		done
 
 
-#@ Install swallow in /usr/bin/fet.sh
-install:
-	@ [ -f "/usr/bin/$(FILE)" ] || cp -p $(FILE) "/usr/bin/$(FILE)"
-	@ [ -x "/usr/bin/$(FILE)" ] || chmod +x "/usr/bin/$(FILE)"
+#@ Install swallow in /usr/local/bin/swallow
+install: uninstall
+	@ [ -f "/usr/local/bin/$(FILE)" ] || cp -p $(FILE) "/usr/local/bin/$(FILE)"
+	@ [ -x "/usr/local/bin/$(FILE)" ] || chmod +x "/usr/local/bin/$(FILE)"
 
 
 #@ Uninstall swallow
 uninstall:
-	@ [ ! -f "/usr/bin/$(FILE)" ] || rm -rf "/usr/bin/$(FILE)"
+	@ [ ! -f "/usr/bin/$(FILE)" ] || rm -f "/usr/bin/$(FILE)"
