@@ -1,20 +1,33 @@
+# CONTRIBUTION: By Angel Uniminin <uniminin@zoho.com> in 2020 under the terms of MIT
+
+# NOTICE: Shell is written to be POSIX compatible
 SHELL = /bin/sh
 FILE = swallow
 
-swallow:
+.PHONY: all list
 
-.SILENT: run
-update:
-		@ git pull
+#@ Default target invoked on 'make' (outputs syntax error on this project)
+all:
+	@ $(error Target 'all' is not allowed, use 'make list' to list available targets or read the 'Makefile' file)
+	@ exit 2
+
+#@ List all targets
+list:
+	@ true \
+		&& grep -A 1 "^#@.*" Makefile | sed s/--//gm | sed s/:.*//gm | sed "s/#@/#/gm" | while IFS= read -r line; do \
+			case "$$line" in \
+				"#"*|"") printf '%s\n' "$$line" ;; \
+				*) printf '%s\n' "make $$line"; \
+			esac; \
+		done
 
 
-install:${FILE}
-		@ if [ -f ${FILE} ]; then cp -v ${FILE} /usr/bin; fi
-		@ if [ -f /usr/bin/${FILE} ]; then chmod +x /usr/bin/${FILE}; fi
-		@ if command -v ${FILE} >/dev/null; then printf "%s\n" "Swallow has been installed on this system"; fi
-		@ if ! command -v ${FILE} >/dev/null; then printf "%s\n" "Failed to install Swallow on this system"; fi
+#@ Install swallow in /usr/local/bin/swallow
+install: uninstall
+	@ [ -f "/usr/local/bin/$(FILE)" ] || cp -p $(FILE) "/usr/local/bin/$(FILE)"
+	@ [ -x "/usr/local/bin/$(FILE)" ] || chmod +x "/usr/local/bin/$(FILE)"
 
-uninstall:${FILE}
-		@ if [ -f /usr/bin/${FILE} ]; then rm -v /usr/bin/${FILE}; fi
-		@ if ! command -v ${FILE} >/dev/null; then printf "%s\n" "Swallow has been removed from this system"; fi
-		@ if command -v ${FILE} >/dev/null; then printf "%s\n" "Failed to remove Swallow from this system"; fi
+
+#@ Uninstall swallow
+uninstall:
+	@ [ ! -f "/usr/bin/$(FILE)" ] || rm -f "/usr/bin/$(FILE)"
