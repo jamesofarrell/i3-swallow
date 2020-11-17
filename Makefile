@@ -24,7 +24,7 @@ list:
 
 #@ Install swallow in /usr/local/bin/swallow
 install: uninstall
-	@ [ -f "/usr/local/bin/$(FILE)" ] || { cp -p $(FILE) "/usr/local/bin/$(FILE)" || exit 1 ;}
+	@ [ -f "/usr/local/bin/$(FILE)" ] || { cp -p $(FILE).py "/usr/local/bin/$(FILE)" || exit 1 ;}
 	@ [ -x "/usr/local/bin/$(FILE)" ] || { chmod +x "/usr/local/bin/$(FILE)" || exit 1 ;}
 
 
