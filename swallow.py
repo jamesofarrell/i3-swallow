@@ -8,7 +8,7 @@ from threading import Timer
 from time import sleep
 
 
-class I3Swallow(object):
+class I3Swallow():
 
 	def __init__(self):
 		self.swallowed = False
