@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/github/issues/jamesofarrell/i3-swallow?color=violet&style=for-the-badge">
   <img src="https://img.shields.io/github/stars/jamesofarrell/i3-swallow?style=for-the-badge">
   <img src="https://img.shields.io/github/forks/jamesofarrell/i3-swallow?color=teal&style=for-the-badge">
-  <img src="https://github.com/Uniminin/Swallow/blob/master/Swallow.gif">
+  <img src="https://github.com/jamesofarrell/Swallow/blob/master/Swallow.gif">
 </p>
 
 ## Requirements
@@ -19,7 +19,7 @@
 
 ## Installation Instructions
 ```bash
-$ git clone https://github.com/Uniminin/Swallow/
+$ git clone https://github.com/jamesofarrell/Swallow/
 $ cd Swallow
 $ python3 -m pip install -r requirements.txt
 $ sudo make install
