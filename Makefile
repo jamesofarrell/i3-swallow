@@ -1,8 +1,8 @@
-# CONTRIBUTION: Angel Uniminin <uniminin@zoho.com> in 2020 under the terms of MIT
+# Written by Angel Uniminin <uniminin@zoho.com> in 2020 under the terms of MIT
 
-# NOTICE: Shell is written to be POSIX compatible
-SHELL = /bin/sh
-FILE = swallow
+BIN = ~/.local/bin
+FILE = swallow.py
+PROGRAM = swallow
 
 .PHONY: all list
 
@@ -16,18 +16,18 @@ list:
 	@ true \
 		&& grep -A 1 "^#@.*" Makefile | sed s/--//gm | sed s/:.*//gm | sed "s/#@/#/gm" | while IFS= read -r line; do \
 			case "$$line" in \
-				"#"*|"") printf '%s\n' "$$line" ;; \
-				*) printf '%s\n' "make $$line"; \
+				"#"*|"") printf "%s\n" "$$line" ;; \
+				*) printf "%s\n" "make $$line"; \
 			esac; \
 		done
 
 
-#@ Install swallow in /usr/local/bin/swallow
+#@ Install swallow in ~/.local/bin/swallow
 install: uninstall
-	@ [ -f "/usr/local/bin/$(FILE)" ] || { cp -p $(FILE).py "/usr/local/bin/$(FILE)" || exit 1 ;}
-	@ [ -x "/usr/local/bin/$(FILE)" ] || { chmod +x "/usr/local/bin/$(FILE)" || exit 1 ;}
+	@ [ -f "$(BIN)/$(PROGRAM)" ] || { cp -p $(FILE) "$(BIN)/$(PROGRAM)" || exit 1 ;}
+	@ [ -x "$(BIN)/$(PROGRAM)" ] || { chmod 770 "$(BIN)/$(PROGRAM)" || exit 1 ;}
 
 
 #@ Uninstall swallow
 uninstall:
-	@ [ ! -f "/usr/bin/$(FILE)" ] || { rm -f "/usr/bin/$(FILE)" || exit 1 ;}
+	@ [ ! -f "$(BIN)/$(PROGRAM)" ] || { rm -f "$(BIN)/$(PROGRAM)" || exit 1 ;}

@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/github/issues/jamesofarrell/i3-swallow?color=violet&style=for-the-badge">
   <img src="https://img.shields.io/github/stars/jamesofarrell/i3-swallow?style=for-the-badge">
   <img src="https://img.shields.io/github/forks/jamesofarrell/i3-swallow?color=teal&style=for-the-badge">
-  <img src="https://github.com/Uniminin/Swallow/blob/master/Swallow.gif">
+  <img src="https://github.com/jamesofarrell/i3-swallow/blob/master/Swallow.gif">
 </p>
 
 ## Requirements
@@ -17,13 +17,20 @@
 * Python3.x+
 * Python3.x+ Pip
 
-## Installation Instructions
+## Installation Instruction
 ```bash
-$ git clone https://github.com/jamesofarrell/Swallow/
-$ cd Swallow
-$ python3 -m pip install -r requirements.txt
-$ sudo make install
+# clone the repository
+git clone https://github.com/jamesofarrell/i3-swallow
+
+# change directory to `i3-swallow`
+cd i3-swallow
+
+# install necessary python dependencies to run i3-swallow
+python3 -m pip install -r requirements.txt
+
+# install i3-swallow in `~/.local/bin/swallow`
+<superuser> make install
 ```
 
-## License :scroll:
+## License
 This Project is licensed under the MIT License. Check license file for more info.
