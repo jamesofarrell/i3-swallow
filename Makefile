@@ -1,4 +1,4 @@
-# CONTRIBUTION: By Angel Uniminin <uniminin@zoho.com> in 2020 under the terms of MIT
+# CONTRIBUTION: Angel Uniminin <uniminin@zoho.com> in 2020 under the terms of MIT
 
 # NOTICE: Shell is written to be POSIX compatible
 SHELL = /bin/sh
