@@ -16,8 +16,8 @@ list:
 	@ true \
 		&& grep -A 1 "^#@.*" Makefile | sed s/--//gm | sed s/:.*//gm | sed "s/#@/#/gm" | while IFS= read -r line; do \
 			case "$$line" in \
-				"#"*|"") printf '%s\n' "$$line" ;; \
-				*) printf '%s\n' "make $$line"; \
+				"#"*|"") printf "%s\n" "$$line" ;; \
+				*) printf "%s\n" "make $$line"; \
 			esac; \
 		done
 
