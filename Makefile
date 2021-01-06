@@ -1,8 +1,8 @@
-# CONTRIBUTION: Angel Uniminin <uniminin@zoho.com> in 2020 under the terms of MIT
+# Written by Angel Uniminin <uniminin@zoho.com> in 2020 under the terms of MIT
 
-# NOTICE: Shell is written to be POSIX compatible
-SHELL = /bin/sh
-FILE = swallow
+BIN = ~/.local/bin
+FILE = swallow.py
+PROGRAM = swallow
 
 .PHONY: all list
 
@@ -22,12 +22,12 @@ list:
 		done
 
 
-#@ Install swallow in /usr/local/bin/swallow
+#@ Install swallow in ~/.local/bin/swallow
 install: uninstall
-	@ [ -f "/usr/local/bin/$(FILE)" ] || { cp -p $(FILE).py "/usr/local/bin/$(FILE)" || exit 1 ;}
-	@ [ -x "/usr/local/bin/$(FILE)" ] || { chmod +x "/usr/local/bin/$(FILE)" || exit 1 ;}
+	@ [ -f "$(BIN)/$(FILE)" ] || { cp -p $(FILE) "$(BIN)/$(PROGRAM)" || exit 1 ;}
+	@ [ -x "$(BIN)/$(FILE)" ] || { chmod +x "$(BIN)/$(PROGRAM)" || exit 1 ;}
 
 
 #@ Uninstall swallow
 uninstall:
-	@ [ ! -f "/usr/bin/$(FILE)" ] || { rm -f "/usr/bin/$(FILE)" || exit 1 ;}
+	@ [ ! -f "$(BIN)/$(FILE)" ] || { rm -f "$(BIN)/$(PROGRAM)" || exit 1 ;}
