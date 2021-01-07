@@ -13,7 +13,7 @@
 </p>
 
 ## Requirements
-* Unix system with i3 window manager
+* Unix system with i3 window manager, or i3 compatible window manager such as sway
 * Python3.x+
 * Python3.x+ Pip
 
