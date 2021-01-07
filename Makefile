@@ -24,10 +24,10 @@ list:
 
 #@ Install swallow in ~/.local/bin/swallow
 install: uninstall
-	@ [ -f "$(BIN)/$(PROGRAM)" ] || { cp -p $(FILE) "$(BIN)/$(PROGRAM)" || exit 1 ;}
-	@ [ -x "$(BIN)/$(PROGRAM)" ] || { chmod 770 "$(BIN)/$(PROGRAM)" || exit 1 ;}
+	@ [ -f "$(BIN)/$(PROGRAM)" ] || { cp -p $(FILE) $(BIN)/$(PROGRAM) || exit 1 ;}
+	@ [ -x "$(BIN)/$(PROGRAM)" ] || { chmod 770 $(BIN)/$(PROGRAM) || exit 1 ;}
 
 
 #@ Uninstall swallow
 uninstall:
-	@ [ ! -f "$(BIN)/$(PROGRAM)" ] || { rm -f "$(BIN)/$(PROGRAM)" || exit 1 ;}
+	@ [ -f "$(BIN)/$(PROGRAM)" ] || { rm -f $(BIN)/$(PROGRAM) || exit 1 ;}
