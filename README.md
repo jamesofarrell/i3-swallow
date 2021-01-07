@@ -29,7 +29,7 @@ cd i3-swallow
 python3 -m pip install -r requirements.txt
 
 # install i3-swallow in `~/.local/bin/swallow`
-<superuser> make install
+make install
 ```
 
 ## License
