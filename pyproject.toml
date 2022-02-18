@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "i3-swallow"
+version = "1.0.0"
+description = "Swallow a terminal window in i3/sway"
+authors = ["jamesofarrell"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/ViliamV/i3-swallow"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+i3ipc = "^2.2.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+swallow = "i3_swallow:main"

@@ -12,25 +12,29 @@
   <img src="https://github.com/jamesofarrell/i3-swallow/blob/master/Swallow.gif">
 </p>
 
+## Information
+
+This repo just packages [jamesofarrell/i3-swallow](https://github.com/jamesofarrell/i3-swallow) script using [Poetry](https://python-poetry.org/)
+so it can be install using `pip`
+
 ## Requirements
-* Unix system with i3 window manager, or i3 compatible window manager such as sway
-* Python3.x+
-* Python3.x+ Pip
+
+- Unix system with i3 window manager, or i3 compatible window manager such as sway
+- Python3.x+
+- Python3.x+ Pip
 
 ## Installation Instruction
+
 ```bash
-# clone the repository
-git clone https://github.com/jamesofarrell/i3-swallow
+pip install --user i3-swallow
+```
 
-# change directory to `i3-swallow`
-cd i3-swallow
+## Usage
 
-# install necessary python dependencies to run i3-swallow
-python3 -m pip install -r requirements.txt
-
-# install i3-swallow in `~/.local/bin/swallow`
-make install
+```bash
+swallow -h
 ```
 
 ## License
+
 This Project is licensed under the MIT License. Check license file for more info.
